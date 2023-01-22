@@ -1,31 +1,41 @@
 <!-- eslint-disable vue/v-on-event-hyphenation -->
 <template>
   <v-container full-width>
-    <v-spacer></v-spacer>
-    <v-text-field
-      v-model="search"
-      class="search"
-      append-icon="mdi-magnify"
-      label="Search"
-      single-line
-      hide-details
-    ></v-text-field>
-    <div class="text-center">
-      <v-dialog v-model="dialog" width="500">
-        <objects-filter @requestFilterData="getObjects"></objects-filter>
-      </v-dialog>
-    </div>
+    <v-row class="mb-6">
+      <v-col cols="5">
+        <v-text-field
+          v-model="search"
+          class="search"
+          append-icon="mdi-magnify"
+          label="Поиск"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-col>
+      <v-col cols="1" class="mx-1">
+        <objects-filter
+          @submit-filter-data="filterDataCallback($event)"
+        ></objects-filter>
+      </v-col>
+      <v-col cols="1" class="mx-1">
+        <objects-export :query-param="query"></objects-export>
+      </v-col>
+      <v-col cols="1" class="mx-1">
+        <objects-import></objects-import>
+      </v-col>
+    </v-row>
+
     <objects-simple
       :items="items"
-      :items-per-page="itemsPerPage"
+      :items-per-page="query.size"
     ></objects-simple>
     <div class="text-center">
       <v-pagination
-        v-model="currentPage"
+        v-model="query.page"
         :length="totalPages"
         prev-icon="mdi-menu-left"
         next-icon="mdi-menu-right"
-        @update:model-value="getObjects"
+        @update:model-value="getObjects(query)"
       ></v-pagination>
     </div>
   </v-container>
@@ -36,46 +46,42 @@
 
 import ObjectsSimple from '@/components/objects/ObjectsSimple.vue'
 import ObjectsFilter from '@/components/objects/ObjectsFilter.vue'
+import ObjectsExport from '@/components/objects/ObjectsExport.vue'
+import ObjectsImport from '@/components/objects/ObjectsImport.vue'
 
-import { ref, watch, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import httpClient from '@/plugins/httpclient'
 import { onBeforeMount } from 'vue'
 
 const items = ref(null)
 const itemsTotal = ref(0)
-const itemsPerPage = ref(50)
-const currentPage = ref(1)
-const totalPages = ref(1)
-const dialog = ref(false)
+const totalPages = ref(0)
 
-const query = ref(null)
-
-
-defineExpose({
-  items,
-  itemsTotal,
-  itemsPerPage,
-  currentPage,
-  totalPages
+const query = reactive({
+  size: 30,
+  page: 1
 })
 
+function filterDataCallback(arg) {
+  console.log(arg)
+  for (let key in arg) {
+    if (arg[key] !== null) {
+      query[key] = arg[key]
+    }
+  }
+  getObjects(query)
+}
+
 function getObjects(arg) {
-  let params = {
-    page: currentPage.value,
-    size: itemsPerPage.value
-  }
-  if (arg.value != null) {
-    params.value.assign(arg)
-  }
   httpClient
     .get(`http://localhost:8081/objects`, {
-      params: params
+      params: arg
     })
     // 200+
     .then((response) => {
       items.value = response.data.items
       itemsTotal.value = response.data.total
-      totalPages.value = Math.round(itemsTotal.value / itemsPerPage.value)
+      totalPages.value = Math.round(itemsTotal.value / query.size)
     })
     // не 200+
     .catch((error) => {
@@ -85,27 +91,9 @@ function getObjects(arg) {
     })
 }
 
-
-
-
-onMounted(() => {
-  watch(
-    () => currentPage,
-    (value) => {
-      currentPage.value = value
-      getObjects()
-    }
-  )
-})
-
 onBeforeMount(() => {
   getObjects(query)
 })
-//const dialog = ref(false)
 </script>
 
-<style>
-.v-text-field.search {
-  width: 400px;
-}
-</style>
+<style></style>
