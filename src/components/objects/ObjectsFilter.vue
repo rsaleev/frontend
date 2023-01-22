@@ -1,218 +1,219 @@
 <template>
-  <v-container>
-    <v-form class="requestFilter" @submit="setFilterData">
-      <v-card class="filter">
-        <v-card-title>ID ФИАС</v-card-title>
-        <v-text-field
-          v-model="fiasIdFilter"
-          single-line
-          hide-details
-        ></v-text-field>
+  <div class="text-center">
+    <v-btn fab @click.stop="dialog = true">
+      <v-icon>mdi-filter</v-icon>
+    </v-btn>
+    <v-dialog v-model="dialog" scrollable max-width="500px">
+      <v-card>
+        <v-card-item class="filter">
+          <v-card-title>ID ФИАС</v-card-title>
+          <v-text-field
+            v-model="filterData.fias_id"
+            single-line
+            hide-details
+            placeholder="ФИАС ID"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Код ФИАС</v-card-title>
+          <v-text-field
+            v-model="filterData.fias_code"
+            single-line
+            hide-details
+            placeholder="ФИАС код"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Адрес</v-card-title>
+          <v-text-field
+            v-model="filterData.address"
+            single-line
+            hide-details
+            placeholder="Адрес"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Регион</v-card-title>
+
+          <v-text-field
+            v-model="filterData.region"
+            single-line
+            hide-details
+            placeholder="Регион"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Район</v-card-title>
+          <v-text-field
+            v-model="filterData.area"
+            single-line
+            hide-details
+            placeholder="Район"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Округ</v-card-title>
+          <v-text-field
+            v-model="filterData.district"
+            single-line
+            hide-details
+            placeholder="Округ"
+          ></v-text-field>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Годы постройки</v-card-title>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="filterData.year_built_min"
+                placeholder="С ..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="filterData.year_built_max"
+                placeholder="По..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Годы эксплуатации</v-card-title>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="filterData.year_maintenance_min"
+                placeholder="c"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="filterData.year_maintenance_max"
+                placeholder="по..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Кол-во подъездов</v-card-title>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="filterData.doors_min"
+                placeholder="от..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="filterData.doors_max"
+                placeholder="до..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Кол-во этажей</v-card-title>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="filterData.levels_min"
+                placeholder="от..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="filterData.levels_max"
+                placeholder="до..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Дата изменения статуса</v-card-title>
+          <v-row>
+            <v-col>
+              <v-text-field
+                v-model="filterData.status_date_min"
+                placeholder="от..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="filterData.status_date_max"
+                placeholder="до..."
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-card-item class="filter">
+          <v-card-title>Статус</v-card-title>
+          <v-text-field
+            v-model="filterData.status"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-item>
+        <v-card-actions>
+          <v-btn @click.stop="submitFilterData">Применить</v-btn>
+        </v-card-actions>
       </v-card>
-      <v-card class="filter">
-        <v-card-title>Код ФИАС</v-card-title>
-        <v-text-field
-          v-model="fiasCodeFilter"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Адрес</v-card-title>
-        <v-text-field
-          v-model="addressFilter"
-          placeholder="Тверская 10"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Регион</v-card-title>
-        <v-text-field
-          v-model="regionFilter"
-          placeholder="Москва"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Район</v-card-title>
-        <v-text-field
-          v-model="areaFilter"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Округ</v-card-title>
-        <v-text-field
-          v-model="districtFilter"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Годы постройки</v-card-title>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="yearBuiltMinFilter"
-              placeholder="c"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="yearBuiltMaxFilter"
-              placeholder="по..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Годы эксплуатации</v-card-title>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="yearMaintenanceMinFilter"
-              placeholder="c"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="yearMaintenanceMaxFilter"
-              placeholder="по..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Кол-во подъездов</v-card-title>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="doorsMinFilter"
-              placeholder="от..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="doorsMaxFilter"
-              placeholder="до..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Кол-во этажей</v-card-title>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="levelsMinFilter"
-              placeholder="от..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="levelsMaxFilter"
-              placeholder="до..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Дата изменения статуса</v-card-title>
-        <v-row>
-          <v-col>
-            <v-text-field
-              v-model="statusDateMinFilter"
-              placeholder="от..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-          <v-col>
-            <v-text-field
-              v-model="statusDateMaxFilter"
-              placeholder="до..."
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card>
-      <v-card class="filter">
-        <v-card-title>Статус</v-card-title>
-        <v-text-field
-          v-model="statusFilter"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card>
-      <v-btn type="submit" @click="setFilterData">Применить</v-btn>
-    </v-form>
-  </v-container>
+    </v-dialog>
+  </div>
 </template>
 
 <script setup>
-import { ref, emit } from 'vue'
+import { ref, reactive } from 'vue'
 
-defineEmits(['requestFilterData'])
+const emit = defineEmits(['submitFilterData'])
 
-const requestFilterData = ref(null)
+const dialog = ref(false)
 
-const fiasIdFilter = ref(null)
-const fiasCodeFilter = ref(null)
-const addressFilter = ref(null)
-const regionFilter = ref(null)
-const areaFilter = ref(null)
-const districtFilter = ref(null)
-const yearBuiltMinFilter = ref(null)
-const yearBuiltMaxFilter = ref(null)
-const yearMaintenanceMinFilter = ref(null)
-const yearMaintenanceMaxFilter = ref(null)
-const doorsMinFilter = ref(null)
-const doorsMaxFilter = ref(null)
-const levelsMinFilter = ref(null)
-const levelsMaxFilter = ref(null)
-const statusFilter = ref(null)
-const statusDateMinFilter = ref(null)
-const statusDateMaxFilter = ref(null)
+const filterData = reactive({
+  fias_id: null,
+  fias_code: null,
+  address: null,
+  region: null,
+  area: null,
+  district: null,
+  year_built_min: null,
+  year_built_max: null,
+  year_maintenance_min: null,
+  year_maintenance_max: null,
+  doors_min: null,
+  doors_max: null,
+  levels_min: null,
+  levels_max: null,
+  status: null,
+  status_date_min: null,
+  status_date_max: null
+})
 
-function setFilterData() {
-  requestFilterData.value.append(fiasIdFilter.value)
-  requestFilterData.value.append(fiasCodeFilter.value)
-  requestFilterData.value.append(addressFilter.value)
-  requestFilterData.value.append(regionFilter.value)
-  requestFilterData.value.append(areaFilter.value)
-  requestFilterData.value.append(districtFilter.value)
-  requestFilterData.value.append(yearBuiltMinFilter.value)
-  requestFilterData.value.append(yearBuiltMaxFilter.value)
-  requestFilterData.value.append(yearMaintenanceMinFilter.value)
-  requestFilterData.value.append(yearMaintenanceMaxFilter.value)
-  requestFilterData.value.append(doorsMinFilter.value)
-  requestFilterData.value.append(doorsMaxFilter.value)
-  requestFilterData.value.append(levelsMinFilter.value)
-  requestFilterData.value.append(levelsMaxFilter.value)
-  requestFilterData.value.append(statusFilter.value)
-  requestFilterData.value.append(statusDateMinFilter.value)
-  requestFilterData.value.append(statusDateMaxFilter.value)
-  emit('requestFilterData', requestFilterData)
+function submitFilterData() {
+  emit('submitFilterData', filterData)
+  dialog.value = false
+  for (let key in filterData) {
+    filterData[key] = null
+  }
 }
 </script>
 
@@ -220,8 +221,5 @@ function setFilterData() {
 .v-card-title {
   width: 50%;
   font-size: 14px;
-}
-.v-text-field {
-  height: 10%;
 }
 </style>
