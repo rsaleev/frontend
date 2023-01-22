@@ -1,6 +1,16 @@
 <template>
-  <div>
-    <v-btn @click="exportData">Экспорт</v-btn>
+  <div class="text-center">
+    <v-btn :disabled="dialog" :loading="dialog" @click="exportData">
+      <v-icon>mdi-download</v-icon>
+    </v-btn>
+    <v-dialog v-model="dialog" hide-overlay persistent width="300">
+      <v-card width="300px">
+        <v-card-text>
+          Загрузка файла
+          <v-progress-linear indeterminate class="mb-0"></v-progress-linear>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -18,42 +28,19 @@ const props = defineProps({
 const params = toRefs(props.queryParam)
 const taskId = ref(null)
 const taskState = ref(null)
-
-const polling = null
+const polling = ref(null)
+const dialog = ref(false)
 
 function getIds() {
   httpClient
-    .get(`http://localhost:8081/objects`, {
+    .get(`http://localhost:8081/objects/ids`, {
       params: params
     })
     // 200+
     .then((response) => {
-      let items = response.data.items
-      let ids = []
-      items.forEach((element) => {
-        ids.value.push(element.id)
-      })
+      let ids = response.data.ids
       return ids
     })
-    // не 200+
-    .catch((error) => {
-      if (error.response) {
-        return error.response
-      }
-    })
-}
-function exportTaskCheck() {
-  httpClient
-    .get(`http://localhost:8081/objects/export/check`, {
-      params: {
-        id: taskId.value
-      }
-    })
-    // 200+
-    .then((response) => {
-      taskState.value = response.data.state
-    })
-
     // не 200+
     .catch((error) => {
       if (error.response) {
@@ -68,24 +55,25 @@ function exportDataRetrieve() {
       params: {
         id: taskId.value
       },
-      responseType: 'stream'
+      responseType: 'blob',
+      headers: {
+        Accept:
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
     })
     .then((response) => {
-      let content = response.headers['Content-Disposition']
-      let file = content.split(';')
-      let filename = file[1].split('=')
-      let buffer = []
-      for (const data of response.data) {
-        buffer.push(data)
+      if (response.status === 200) {
+        clearInterval(polling.value)
+        dialog.value = false
+        let href = URL.createObjectURL(response.data)
+        let link = document.createElement('a')
+        link.href = href
+        link.setAttribute('download', 'export.xlsx')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(href)
       }
-      let href = URL.createObjectURL(buffer)
-      let link = document.createElement('a')
-      link.href = href
-      link.setAttribute('download', filename)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-      URL.revokeObjectURL(href)
     })
     // не 200+
     .catch((error) => {
@@ -97,9 +85,11 @@ function exportDataRetrieve() {
 
 function exportData() {
   // получить список ID
+  dialog.value = true
+
   let itemsIds = getIds()
   httpClient
-    .get(`http://localhost:8081/objects/export?ids`, {
+    .get(`http://localhost:8081/objects/export`, {
       params: {
         ids: itemsIds
       },
@@ -107,12 +97,11 @@ function exportData() {
         return qs.stringify(params)
       }
     })
-
     // 200+
     .then((response) => {
       taskId.value = response.data.id
       taskState.value = response.data.state
-      pollExportTaskCheck()
+      pollExportTaskRetrieve()
     })
     // не 200+
     .catch((error) => {
@@ -122,25 +111,9 @@ function exportData() {
     })
 }
 
-function pollExportTaskCheck() {
+function pollExportTaskRetrieve() {
   polling.value = setInterval(() => {
-    exportTaskCheck()
-    if (taskState.value === 'SUCCESS') {
-      clearInterval(polling.value)
-      exportDataRetrieve()
-    }
+    exportDataRetrieve()
   }, 1000)
-    // 200+
-    .then((response) => {
-      taskId.value = response.data.id
-      taskState.value = response.data.state
-      pollExportTaskCheck()
-    })
-    // не 200+
-    .catch((error) => {
-      if (error.response) {
-        return error.response
-      }
-    })
 }
 </script>
