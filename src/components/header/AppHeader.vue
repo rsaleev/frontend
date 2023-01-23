@@ -7,11 +7,11 @@
     />
     <!-- Текст в заголовке -->
     <v-app-bar-title class="headline">
-      <span class="justify-center">{{ headerTitle }}</span>
+      <span class="justify-center">{{ appHeaderTitle }}</span>
       <!-- Объект меню > -->
     </v-app-bar-title>
     <v-spacer />
-    <h4>{{ userIn }}</h4>
+    <!-- <h4>{{ userIn }}</h4> -->
     <v-btn to="/auth/account" color="white">
       <v-icon>mdi-account</v-icon>
     </v-btn>
@@ -26,7 +26,7 @@ import { ref } from 'vue'
 // компоненты
 import AppNavigationDrawer from '@/components/header/AppNavigationDrawer.vue'
 // переменные
-const headerTitle = process.env.VUE_APP_TITLE
 const drawerActivated = ref(false)
+const appHeaderTitle = process.env.VUE_APP_TITLE
 //функции
 </script>
