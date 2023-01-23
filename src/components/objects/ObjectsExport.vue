@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <v-btn :disabled="dialog" :loading="dialog" @click="exportData">
-      <v-icon>mdi-download</v-icon>
+      <v-icon color="green">mdi-download</v-icon>
     </v-btn>
     <v-dialog v-model="dialog" hide-overlay persistent width="300">
       <v-card width="300px">
@@ -25,6 +25,8 @@ const props = defineProps({
     default: null
   }
 })
+const rootURL = process.env.VUE_APP_BACKEND_URL
+
 const params = toRefs(props.queryParam)
 const taskId = ref(null)
 const taskState = ref(null)
@@ -33,7 +35,7 @@ const dialog = ref(false)
 
 function getIds() {
   httpClient
-    .get(`http://localhost:8081/objects/ids`, {
+    .get(rootURL.concat('/objects/ids'), {
       params: params
     })
     // 200+
@@ -51,7 +53,7 @@ function getIds() {
 
 function exportDataRetrieve() {
   httpClient
-    .get(`http://localhost:8081/objects/export/download`, {
+    .get(rootURL.concat('/objects/export/download'), {
       params: {
         id: taskId.value
       },
@@ -89,7 +91,7 @@ function exportData() {
 
   let itemsIds = getIds()
   httpClient
-    .get(`http://localhost:8081/objects/export`, {
+    .get(process.env.VUE_APP_BACKEND_URL.concat('/objects/export'), {
       params: {
         ids: itemsIds
       },
