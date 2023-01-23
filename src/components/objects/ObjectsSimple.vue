@@ -2,17 +2,20 @@
   <v-data-table
     :items-per-page="itemsPerPage"
     fixed-header
-    class="elevation-1 custom_table"
+    dense
+    height="400"
+    class="elevation-0 custom_table"
   >
     <thead>
       <tr>
-        <th class="text-center">Адрес</th>
-        <th class="text-center">Регион</th>
-        <th class="text-center">Округ</th>
-        <th class="text-center">Район</th>
-        <th class="text-center">Кол-во подъездов</th>
-        <th class="text-center">Статус</th>
-        <th class="text-center">Последнее изменение</th>
+        <th class="text-center header-text">Адрес</th>
+        <th class="text-center header-text">Регион</th>
+        <th class="text-center header-text">Округ</th>
+        <th class="text-center header-text">Район</th>
+        <th class="text-center header-text">Кол-во подъездов</th>
+        <th class="text-center header-text">Статус</th>
+        <th class="text-center header-text">Последнее изменение</th>
+        <th class="text-center header-text">Прогноз</th>
       </tr>
     </thead>
     <tbody>
@@ -50,6 +53,11 @@
             {{ formatDateTime(item.status_date) }}
           </p>
         </td>
+        <td class="text-center">
+          <p class="text-wrap">
+            {{ item.predict }}
+          </p>
+        </td>
       </tr>
     </tbody>
   </v-data-table>
@@ -69,7 +77,7 @@ const props = defineProps({
 
   itemsPerPage: {
     type: Number,
-    default: 50
+    default: 30
   },
   currentPage: {
     type: Number,
@@ -90,9 +98,20 @@ onMounted(() => {
 </script>
 
 <style>
+.custom_table {
+  max-height: 400px;
+  overflow: auto;
+}
 .custom_table td {
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
+}
+.text-wrap {
+  font-size: 12px;
+}
+
+.header-text {
+  font-size: 14px;
 }
 </style>
