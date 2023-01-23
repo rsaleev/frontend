@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <v-btn fab @click.stop="dialog = true">
-      <v-icon>mdi-filter</v-icon>
+      <v-icon color="blue">mdi-filter</v-icon>
     </v-btn>
     <v-dialog v-model="dialog" scrollable max-width="500px">
       <v-card>
