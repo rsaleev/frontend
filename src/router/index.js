@@ -29,7 +29,7 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { title: 'Главная', requiresAuth: false }
+    meta: { title: 'Главная', requiresAuth: true }
   },
   {
     path: '/login',
@@ -37,7 +37,7 @@ const routes = [
     component: LoginView,
     meta: {
       title: 'Авторизация',
-      requiresAuth: false,
+      requiresAuth: true,
       routeScope: null
     }
   },
@@ -47,7 +47,7 @@ const routes = [
     component: ObjectsView,
     meta: {
       title: 'Объекты',
-      requiresAuth: false,
+      requiresAuth: true,
       routeScope: null
     }
   },
