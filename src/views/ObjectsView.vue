@@ -2,16 +2,7 @@
 <template>
   <v-container full-width>
     <v-row class="mb-6">
-      <v-col cols="5">
-        <v-text-field
-          v-model="search"
-          class="search"
-          append-icon="mdi-magnify"
-          label="Поиск"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-col>
+      <v-col cols="5"></v-col>
       <v-col cols="1" class="mx-1">
         <objects-filter
           @submit-filter-data="filterDataCallback($event)"
@@ -24,7 +15,6 @@
         <objects-import></objects-import>
       </v-col>
     </v-row>
-
     <objects-simple
       :items="items"
       :items-per-page="query.size"
@@ -53,6 +43,8 @@ import { ref, reactive } from 'vue'
 import httpClient from '@/plugins/httpclient'
 import { onBeforeMount } from 'vue'
 
+const rootURL = process.env.VUE_APP_BACKEND_URL
+
 const items = ref(null)
 const itemsTotal = ref(0)
 const totalPages = ref(0)
@@ -74,7 +66,7 @@ function filterDataCallback(arg) {
 
 function getObjects(arg) {
   httpClient
-    .get(`http://localhost:8081/objects`, {
+    .get(rootURL.concat('/objects'), {
       params: arg
     })
     // 200+
