@@ -3,7 +3,7 @@ import axios from 'axios'
 const namespaced = true
 
 const state = {
-  userToken: localStorage.getItem('token')
+  userToken: null
 }
 
 const getters = {
@@ -11,8 +11,8 @@ const getters = {
   TOKEN_GET(state) {
     return state.userToken
   },
-  LOGGED_IN_GET(state) {
-    if (state.userToken) {
+  LOGGED_GET(state) {
+    if (state.userToken !== null) {
       return true
     } else {
       return false
@@ -33,18 +33,16 @@ const mutations = {
 const actions = {
   // запрос на авторизацию и получение токена
   LOGIN_USER({ commit }, payload) {
-    console.log(payload)
     axios
       .post(`${process.env.VUE_APP_BACKEND_URL}/auth/login`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
       // 200+
       .then((response) => {
-        console.log(response)
-        // сохранение токена в хранилище и в локальном хранилище
-        localStorage.setItem('token', response.data.token)
+        // // сохранение токена в хранилище и в локальном хранилище
+        // localStorage.setItem('token', response.data.access_token)
         // назначение значений
-        commit('TOKEN_SET', response.data.token)
+        commit('TOKEN_SET', response.data.access)
       })
       // не 200+
       .catch((error) => {
@@ -63,7 +61,7 @@ const actions = {
       .then((response) => {
         console.log(response)
         // удаление токена из хранилища и локального хранилища
-        localStorage.removeItem('token')
+        // localStorage.removeItem('token')
         commit('TOKEN_UNSET')
       })
       .catch((error) => {
