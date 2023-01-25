@@ -1,11 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store/index.js'
-//import permissions from '@/helpers/permissions'
 import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
-import TasksView from '@/views/TasksView.vue'
-import ObjectsView from '@/views/ObjectsView.vue'
 
 const appTitle = process.env.VUE_APP_TITLE
 
@@ -29,12 +25,12 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { title: 'Главная', requiresAuth: true }
+    meta: { title: 'Главная', requiresAuth: false }
   },
   {
     path: '/login',
     name: 'auth',
-    component: LoginView,
+    component: () => import('../views/LoginView.vue'),
     meta: {
       title: 'Авторизация',
       requiresAuth: true,
@@ -44,52 +40,11 @@ const routes = [
   {
     path: '/objects',
     name: 'objects',
-    component: ObjectsView,
+    component: () => import('../views/ObjectsView.vue'),
     meta: {
       title: 'Объекты',
-      requiresAuth: true,
-      routeScope: null
-    }
-  },
-  {
-    path: '/account',
-    name: 'account',
-    component: null,
-    meta: {
-      title: 'Личный кабинет',
-      requiresAuth: true,
-      routeScope: null
-    }
-  },
-  {
-    path: '/recover',
-    name: 'recover',
-    component: null,
-    meta: {
-      title: 'Восстановление пароля',
       requiresAuth: false,
       routeScope: null
-    }
-  },
-  {
-    path: '/tasks',
-    name: 'tasks',
-    component: TasksView,
-    meta: {
-      title: 'Задачи',
-      requiresAuth: true,
-      routeScope: 'tasks'
-    }
-  },
-  // beforeResolve: [hasAccess]
-  {
-    path: '/catalogues',
-    name: 'catalogues',
-    component: null,
-    meta: {
-      title: 'Справочники',
-      requiresAuth: true,
-      routeScope: 'catalogues'
     }
   },
   {

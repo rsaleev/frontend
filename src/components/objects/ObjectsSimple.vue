@@ -1,9 +1,9 @@
 <template>
-  <v-data-table
+  <v-table
     :items-per-page="itemsPerPage"
     fixed-header
+    height="700px"
     dense
-    height="400"
     class="elevation-0 custom_table"
   >
     <thead>
@@ -60,7 +60,7 @@
         </td>
       </tr>
     </tbody>
-  </v-data-table>
+  </v-table>
 </template>
 
 <script setup>
@@ -98,10 +98,6 @@ onMounted(() => {
 </script>
 
 <style>
-.custom_table {
-  max-height: 400px;
-  overflow: auto;
-}
 .custom_table td {
   padding-left: 10px;
   padding-right: 10px;
